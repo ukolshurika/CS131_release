@@ -10,9 +10,13 @@ def dot_product(vector1, vector2):
     Returns:
         out: numpy array of shape (x,x) (scalar if x = 1)
     """
-    out = None
+    out = 0
     ### YOUR CODE HERE
-    pass
+    for x, y in np.nditer([vector1, vector2]):
+      out += x*y
+    # vector1.dot(vector2) #=>0 ?????
+    # np.inner(vector1, vector2.T)
+
     ### END YOUR CODE
 
     return out
@@ -27,9 +31,10 @@ def matrix_mult(M, vector1, vector2):
     Returns:
         out: numpy matrix of shape (1, x)
     """
-    out = None
+    out = np.array
     ### YOUR CODE HERE
-    pass
+    print(M.dot(vector1, M))
+    out = M.dot(vector1, M)#.multiply(dot_product(vector1, vector2))
     ### END YOUR CODE
 
     return out
@@ -58,7 +63,7 @@ def get_singular_values(matrix, n):
     Args:
         matrix: numpy matrix of shape (m, w)
         n: number of singular values to output
-        
+
     Returns:
         singular_values: array of shape (n)
     """
@@ -89,7 +94,7 @@ def get_eigen_values_and_vectors(matrix, num_values):
     Args:
         matrix: numpy matrix of shape (m, m)
         num_values: number of eigen values and respective vectors to return
-        
+
     Returns:
         eigen_values: array of shape (n)
         eigen_vectors: array of shape (m, n)
