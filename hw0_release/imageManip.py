@@ -18,14 +18,14 @@ def load(image_path):
 
     ### YOUR CODE HERE
     # Use skimage io.imread
-    pass
+    out = io.imread(image_path)
     ### END YOUR CODE
 
     return out
 
 
 def change_value(image):
-    """ Change the value of every pixel by following x_n = 0.5*x_p^2 
+    """ Change the value of every pixel by following x_n = 0.5*x_p^2
         where x_n is the new value and x_p is the original value
 
     Args:
@@ -38,7 +38,10 @@ def change_value(image):
     out = None
 
     ### YOUR CODE HERE
-    pass
+    for pixel in image:
+        print(np.multiply( 0.5, pixel.dot(pixel)))
+        break
+        pixel = np.multiply( 0.5, pixel.dot(pixel))
     ### END YOUR CODE
 
     return out
@@ -56,7 +59,7 @@ def convert_to_grey_scale(image):
     out = None
 
     ### YOUR CODE HERE
-    pass
+    out = color.rgb2gray(image)
     ### END YOUR CODE
 
     return out
@@ -72,10 +75,18 @@ def rgb_decomposition(image, channel):
         out: numpy array of shape(image_height, image_width, 3)
     """
 
-    out = None
+    out = image
 
     ### YOUR CODE HERE
-    pass
+    for pixel in out:
+        print(pixel)
+        if channel == 'R':
+            pixel[0] = 0
+        elif channel == 'G':
+            pixel[1] = 0
+        else:
+            pixel[2] = 0
+
     ### END YOUR CODE
 
     return out
