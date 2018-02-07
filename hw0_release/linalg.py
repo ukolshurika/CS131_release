@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def dot_product(vector1, vector2):
     """ Implement dot product of the two vectors.
     Args:
@@ -12,9 +11,9 @@ def dot_product(vector1, vector2):
     """
     out = 0
     ### YOUR CODE HERE
-    for x, y in np.nditer([vector1, vector2]):
-      out += x*y
-    # vector1.dot(vector2) #=>0 ?????
+    # for x, y in np.nditer([vector1, vector2]):
+    #   out += x*y
+    out = vector1.dot(vector2)
     # np.inner(vector1, vector2.T)
 
     ### END YOUR CODE
@@ -31,10 +30,9 @@ def matrix_mult(M, vector1, vector2):
     Returns:
         out: numpy matrix of shape (1, x)
     """
-    out = np.array
+
     ### YOUR CODE HERE
-    print(M.dot(vector1, M))
-    out = M.dot(vector1, M)#.multiply(dot_product(vector1, vector2))
+    out = np.multiply(M.dot(vector1), dot_product(vector1, vector2))
     ### END YOUR CODE
 
     return out
@@ -53,7 +51,7 @@ def svd(matrix):
     s = None
     v = None
     ### YOUR CODE HERE
-    pass
+    u, s, v = np.linalg.svd(matrix, full_matrices=True)
     ### END YOUR CODE
 
     return u, s, v
@@ -70,7 +68,8 @@ def get_singular_values(matrix, n):
     singular_values = None
     u, s, v = svd(matrix)
     ### YOUR CODE HERE
-    pass
+    singular_values = np.argsort(s)[:n]
+
     ### END YOUR CODE
     return singular_values
 
@@ -85,7 +84,7 @@ def eigen_decomp(matrix):
     w = None
     v = None
     ### YOUR CODE HERE
-    pass
+    w, v = np.linalg.eig(matrix)
     ### END YOUR CODE
     return w, v
 
@@ -103,6 +102,8 @@ def get_eigen_values_and_vectors(matrix, num_values):
     eigen_values = []
     eigen_vectors = []
     ### YOUR CODE HERE
-    pass
+    eigen_max_indexes = w.argsort()[-num_values:][::-1]
+    eigen_values = w[eigen_max_indexes]
+    eigen_vectors = v[eigen_max_indexes]
     ### END YOUR CODE
     return eigen_values, eigen_vectors
