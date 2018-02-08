@@ -35,13 +35,13 @@ def change_value(image):
         out: numpy array of shape(image_height, image_width, 3)
     """
 
-    out = None
+    out = image.copy()
 
     ### YOUR CODE HERE
-    for pixel in image:
-        print(np.multiply( 0.5, pixel.dot(pixel)))
-        break
-        pixel = np.multiply( 0.5, pixel.dot(pixel))
+    out[:,:,0] = 0.5*out[:,:,0]*out[:,:,0]
+    out[:,:,1] = 0.5*out[:,:,1]*out[:,:,1]
+    out[:,:,2] = 0.5*out[:,:,2]*out[:,:,2]
+
     ### END YOUR CODE
 
     return out
@@ -75,19 +75,14 @@ def rgb_decomposition(image, channel):
         out: numpy array of shape(image_height, image_width, 3)
     """
 
-    out = image
-
+    out = image.copy()
     ### YOUR CODE HERE
-    for pixel in out:
-        print(pixel)
-        if channel == 'R':
-            pixel[0] = 0
-        elif channel == 'G':
-            pixel[1] = 0
-        else:
-            pixel[2] = 0
-
-    ### END YOUR CODE
+    if channel == 'R':
+        out[:,:,0] = 0
+    elif channel == 'G':
+        out[:,:,1] = 0
+    else:
+        out[:,:,2] = 0
 
     return out
 
@@ -106,7 +101,17 @@ def lab_decomposition(image, channel):
     out = None
 
     ### YOUR CODE HERE
-    pass
+    if channel == 'L':
+        lab[:,:,1] = 0
+        lab[:,:,2] = 0
+    elif channel == 'A':
+        lab[:,:,0] = 0
+        lab[:,:,2] = 0
+    else:
+        lab[:,:,0] = 0
+        lab[:,:,1] = 0
+
+    out = color.lab2rgb(lab)
     ### END YOUR CODE
 
     return out
@@ -126,8 +131,17 @@ def hsv_decomposition(image, channel='H'):
     out = None
 
     ### YOUR CODE HERE
-    pass
+    if channel == 'H':
+        hsv[:,:,1] = 0
+        hsv[:,:,2] = 0
+    elif channel == 'S':
+        hsv[:,:,0] = 0
+        hsv[:,:,2] = 0
+    else:
+        hsv[:,:,0] = 0
+        hsv[:,:,1] = 0
     ### END YOUR CODE
+    out = color.hsv2rgb(hsv)
 
     return out
 
@@ -145,9 +159,9 @@ def mix_images(image1, image2, channel1, channel2):
         out: numpy array of shape(image_height, image_width, 3)
     """
 
-    out = None
-    ### YOUR CODE HERE
-    pass
-    ### END YOUR CODE
+    out = rgb_decomposition(image1, channel1)
+    fi2 = rgb_decomposition(image2, channel2)
+    half = int(out.shape[0]/2)
+    out[:, half:out.shape[0]+1, :] = fi2[:, half:out.shape[0], :]
 
     return out
