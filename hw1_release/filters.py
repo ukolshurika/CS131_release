@@ -17,11 +17,15 @@ def conv_nested(image, kernel):
     """
     Hi, Wi = image.shape
     Hk, Wk = kernel.shape
+    hhk = int(Hk/2)
+    hwk = int(Wk/2)
     out = np.zeros((Hi, Wi))
 
-    ### YOUR CODE HERE
-    pass
-    ### END YOUR CODE
+    for i in range(0, Hi-hhk):
+        for j in range(0, Wi-hwk):
+            for ki in range(0, Hk):
+                for kj in range(0, Wk):
+                    out[i, j] += image[i-ki+hhk,j-kj+hwk]*kernel[ki, kj]
 
     return out
 
@@ -44,10 +48,10 @@ def zero_pad(image, pad_height, pad_width):
     """
 
     H, W = image.shape
-    out = None
+    out = np.zeros((H+pad_height*2, W+pad_width*2))
 
     ### YOUR CODE HERE
-    pass
+    out[pad_height:H+pad_height, pad_width:W+pad_width] = image.copy()
     ### END YOUR CODE
     return out
 
@@ -76,7 +80,9 @@ def conv_fast(image, kernel):
     out = np.zeros((Hi, Wi))
 
     ### YOUR CODE HERE
-    pass
+    for i in range(0, Hi)
+        for j in range(0, Wi)
+            out[i, j] = image[]
     ### END YOUR CODE
 
     return out
