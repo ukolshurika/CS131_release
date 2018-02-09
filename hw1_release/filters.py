@@ -78,11 +78,15 @@ def conv_fast(image, kernel):
     Hi, Wi = image.shape
     Hk, Wk = kernel.shape
     out = np.zeros((Hi, Wi))
+    hhk = int(Hk/2)
+    hhw = int(Wk/2)
+    image = zero_pad(image, hhk, hhw)
 
     ### YOUR CODE HERE
-    for i in range(0, Hi)
-        for j in range(0, Wi)
-            out[i, j] = image[]
+    for i in range(hhk, Hi):
+        for j in range(hhw, Wi):
+            # print(list(range(i-hhk, i+hhk+1)), list(range(j-hhw, j+hhw+1)))
+            out[i, j] = np.sum(image[i-hhk:i+hhk+1, j-hhw:j+hhw+1]*kernel)
     ### END YOUR CODE
 
     return out
