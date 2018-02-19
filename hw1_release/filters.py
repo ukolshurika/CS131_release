@@ -20,13 +20,17 @@ def conv_nested(image, kernel):
     hhk = int(Hk/2)
     hwk = int(Wk/2)
     out = np.zeros((Hi, Wi))
-
+    p_image = np.zeros((Hk, Wk))
+    print("--------------------------")
     for i in range(0, Hi-hhk):
         for j in range(0, Wi-hwk):
             for ki in range(0, Hk):
                 for kj in range(0, Wk):
                     out[i, j] += image[i-ki+hhk,j-kj+hwk]*kernel[ki, kj]
-
+                    if i == 0 and j == 0:
+                        p_image[ki, kj] = image[i-ki+hhk,j-kj+hwk]
+    print(p_image)
+    print(out[0,0])
     return out
 
 def zero_pad(image, pad_height, pad_width):
@@ -80,15 +84,22 @@ def conv_fast(image, kernel):
     out = np.zeros((Hi, Wi))
     hhk = int(Hk/2)
     hhw = int(Wk/2)
-    image = zero_pad(image, hhk, hhw)
-
+    image_pad = zero_pad(image, Hi, Wi)
+    image_pad[Hi:Hi*2,0:Wi] = np.flip(image, 1)
+    image_pad[0:Hi,0:Wi] = np.flip(np.flip(image, 1), 0)
+    image_pad[0:Hi,Wi:Wi*2] = np.flip(image, 0)
     ### YOUR CODE HERE
-    for i in range(hhk, Hi):
-        for j in range(hhw, Wi):
-            # print(list(range(i-hhk, i+hhk+1)), list(range(j-hhw, j+hhw+1)))
-            out[i, j] = np.sum(image[i-hhk:i+hhk+1, j-hhw:j+hhw+1]*kernel)
+    print("======================")
+    for i in range(0, Hi):
+        for j in range(0, Wi):
+            ii = i + Hi
+            ij = j + Wi
+            out[i, j] = np.sum(image_pad[ii-hhk-1:ii+hhk, ij-hhw-1:ij+hhw]*kernel)
+            if i == 0 and j == 0:
+                print(ii-hhk-1, ii+hhk, ij-hhw-1, ij+hhw)
+                print(image_pad[ii-hhk-1:ii+hhk, ij-hhw-1:ij+hhw])
     ### END YOUR CODE
-
+    print(out[0,0])
     return out
 
 def conv_faster(image, kernel):
