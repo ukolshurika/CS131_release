@@ -20,17 +20,13 @@ def conv_nested(image, kernel):
     hhk = int(Hk/2)
     hwk = int(Wk/2)
     out = np.zeros((Hi, Wi))
-    p_image = np.zeros((Hk, Wk))
-    print("--------------------------")
+
     for i in range(0, Hi-hhk):
         for j in range(0, Wi-hwk):
             for ki in range(0, Hk):
                 for kj in range(0, Wk):
                     out[i, j] += image[i-ki+hhk,j-kj+hwk]*kernel[ki, kj]
-                    if i == 0 and j == 0:
-                        p_image[ki, kj] = image[i-ki+hhk,j-kj+hwk]
-    print(p_image)
-    print(out[0,0])
+
     return out
 
 def zero_pad(image, pad_height, pad_width):
@@ -84,22 +80,23 @@ def conv_fast(image, kernel):
     out = np.zeros((Hi, Wi))
     hhk = int(Hk/2)
     hhw = int(Wk/2)
+    h_fix = Hk%2
+    w_fix = Wk%2
     image_pad = zero_pad(image, Hi, Wi)
-    image_pad[Hi:Hi*2,0:Wi] = np.flip(image, 1)
-    image_pad[0:Hi,0:Wi] = np.flip(np.flip(image, 1), 0)
-    image_pad[0:Hi,Wi:Wi*2] = np.flip(image, 0)
+    image_pad[Hi:Hi*2,0:Wi] = image
+    image_pad[0:Hi,0:Wi] = image
+    image_pad[0:Hi,Wi:Wi*2] = image
+    kernel = np.flip(np.flip(kernel, 0), 1)
     ### YOUR CODE HERE
-    print("======================")
-    for i in range(0, Hi):
-        for j in range(0, Wi):
+
+    for i in range(0, Hi-hhk):
+        for j in range(0, Wi-hhw):
             ii = i + Hi
             ij = j + Wi
-            out[i, j] = np.sum(image_pad[ii-hhk-1:ii+hhk, ij-hhw-1:ij+hhw]*kernel)
-            if i == 0 and j == 0:
-                print(ii-hhk-1, ii+hhk, ij-hhw-1, ij+hhw)
-                print(image_pad[ii-hhk-1:ii+hhk, ij-hhw-1:ij+hhw])
+            out[i, j] = np.sum(image_pad[ii-hhk:ii+hhk+h_fix, ij-hhw:ij+hhw+w_fix]*kernel)
+
     ### END YOUR CODE
-    print(out[0,0])
+
     return out
 
 def conv_faster(image, kernel):
@@ -134,17 +131,36 @@ def cross_correlation(f, g):
         out: numpy array of shape (Hf, Wf)
     """
 
-    out = None
+    # out = np.array(f.shape)
     ### YOUR CODE HERE
-    pass
+    Hi, Wi = f.shape
+    Hk, Wk = g.shape
+    out = np.zeros((Hi, Wi))
+    hhk = int(Hk/2)
+    hhw = int(Wk/2)
+    h_fix = Hk%2
+    w_fix = Wk%2
+    image_pad = zero_pad(f, Hi, Wi)
+    image_pad[Hi:Hi*2,0:Wi] = f
+    image_pad[0:Hi,0:Wi] = f
+    image_pad[0:Hi,Wi:Wi*2] = f
+    # kernel = np.flip(np.flip(kernel, 0), 1)
+    ### YOUR CODE HERE
+
+    for i in range(0, Hi-hhk):
+        for j in range(0, Wi-hhw):
+            ii = i + Hi
+            ij = j + Wi
+            out[i, j] = np.sum(image_pad[ii-hhk:ii+hhk+h_fix, ij-hhw:ij+hhw+w_fix]*g)
+
     ### END YOUR CODE
 
     return out
 
 def zero_mean_cross_correlation(f, g):
     """ Zero-mean cross-correlation of f and g
-
     Subtract the mean of g from g so that its mean becomes zero
+
 
     Args:
         f: numpy array of shape (Hf, Wf)
@@ -153,10 +169,12 @@ def zero_mean_cross_correlation(f, g):
     Returns:
         out: numpy array of shape (Hf, Wf)
     """
-
+    h, w = g.shape
     out = None
+    g_zero_mean = g-(np.sum(g)/h/w)
+
     ### YOUR CODE HERE
-    pass
+    out = cross_correlation(f, g_zero_mean)
     ### END YOUR CODE
 
     return out
