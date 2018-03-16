@@ -193,9 +193,25 @@ def normalized_cross_correlation(f, g):
         out: numpy array of shape (Hf, Wf)
     """
 
-    out = None
-    ### YOUR CODE HERE
-    pass
-    ### END YOUR CODE
+    Hi, Wi = f.shape
+    Hk, Wk = g.shape
+    out = np.zeros((Hi, Wi))
+    hhk = int(Hk/2)
+    hhw = int(Wk/2)
+    h_fix = Hk%2
+    w_fix = Wk%2
+    image_pad = zero_pad(f, Hi, Wi)
+    image_pad[Hi:Hi*2,0:Wi] = f
+    image_pad[0:Hi,0:Wi] = f
+    image_pad[0:Hi,Wi:Wi*2] = f
+    g_norm = (g - np.mean(g))/np.std(g)
+
+    for i in range(0, Hi-hhk):
+        for j in range(0, Wi-hhw):
+            ii = i + Hi
+            ij = j + Wi
+            f_norm = image_pad[ii-hhk:ii+hhk+h_fix, ij-hhw:ij+hhw+w_fix]
+            f_norm = (f_norm - np.mean(f_norm))*np.std(f_norm)
+            out[i, j] = np.sum(f_norm*g_norm)
 
     return out
